@@ -1,0 +1,48 @@
+
+name: 'Terraform'
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REMOTE_NODE_SSH_PKEY : "${{ secrets.REMOTE_NODE_SSH_PKEY }}"
+  SCW_ACCESS_KEY: "${{ secrets.SCW_ACCESS_KEY }}"
+  SCW_SECRET_KEY: "${{ secrets.SCW_SECRET_KEY }}"
+
+jobs:
+  polute_or_not_polute:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Change working directory
+      run: cd ./iac
+
+    - run: echo $REMOTE_NODE_SSH_PKEY > .id_rsa.pkey
+  
+    - uses: hashicorp/setup-terraform@v2
+      env:
+        SCW_ACCESS_KEY: "${{ secrets.SCW_ACCESS_KEY }}"
+        SCW_SECRET_KEY: "${{ secrets.SCW_SECRET_KEY }}"
+      with:
+        terraform_version: 1.5.6
+
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: false
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+      continue-on-error: true
