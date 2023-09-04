@@ -53,14 +53,6 @@ data "scaleway_baremetal_os" "os" {
   version = "20.04 LTS (Focal Fossa)"
 }
 
-resource "scaleway_baremetal_server" "server" {
-  offer       = data.scaleway_baremetal_offer.offer.name  # The name of the Elastic Metal offer
-  os          = data.scaleway_baremetal_os.os.id          # The ID of the OS
-  ssh_key_ids = [scaleway_iam_ssh_key.key.id]             # The list of SSH key IDs allowed to connect to the server
-  zone        = "fr-par-2"
-}
-
-
 data "local_sensitive_file" "secret_key" {
     filename = pathexpand(".id_rsa.pkey")
 }
