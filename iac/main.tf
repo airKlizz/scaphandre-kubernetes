@@ -12,7 +12,6 @@ terraform {
   required_version = "= 1.5.6"
 }
 
-
 ###############################################
 #         CONFIGURE THE K8S CLUSTER           #
 ###############################################
@@ -30,8 +29,14 @@ resource "scaleway_k8s_pool" "pool" {
   cluster_id  = scaleway_k8s_cluster.multicloud.id
   name        = "multicloud-pool"
   node_type   = "external"
-  size        = 0
+  size        = 1
   region      = "fr-par"
+}
+
+output "kubeconfig" {
+  value       = scaleway_k8s_cluster.multicloud.kubeconfig
+  description = "To be able to connect"
+  sensitive   = true
 }
 
 ###############################################
@@ -45,12 +50,14 @@ resource "scaleway_iam_ssh_key" "key" {
 }
 # Select the type of offer for your server
 data "scaleway_baremetal_offer" "offer" {
-  name = "EM-B112X-SSD"
+  name = "EM-L105X-SATA"
+  zone = "fr-par-2"
 }
 # Select the OS you want installed on your server
 data "scaleway_baremetal_os" "os" {
-  name = "Ubuntu"
-  version = "20.04 LTS (Focal Fossa)"
+  zone    = "fr-par-2"
+  name    = "Ubuntu"
+  version = "22.04 LTS (Jammy Jellyfish)"
 }
 
 data "local_sensitive_file" "secret_key" {
