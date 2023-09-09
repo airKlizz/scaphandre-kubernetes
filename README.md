@@ -37,6 +37,8 @@ git clone https://github.com/hubblo-org/scaphandre
 cd scaphandre
 git switch dev
 helm install scaphandre helm/scaphandre \
+    --set image.name=airklizz/myscaphandre \
+    --set image.tag=kuberegexmodified \
     --set serviceMonitor.enabled=true \
     --set serviceMonitor.namespace=observability \
     --set serviceMonitor.interval=30s \
