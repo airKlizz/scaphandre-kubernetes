@@ -19,7 +19,8 @@ spec:
         - name: electricitymap
           image: airklizz/electricitymap_exporter:latest
           ports:
-          - containerPort: 8000
+          - name: metrics
+            containerPort: 8000
           env:
           - name: AUTH_TOKEN
             valueFrom:
@@ -34,10 +35,6 @@ metadata:
   namespace: observability
   labels:
     app: electricitymap
-  annotations:
-    prometheus.io/port: "8000"
-    prometheus.io/scheme: "http"
-    prometheus.io/scrape: "true"
 spec:
   ports:
   - name: metrics

@@ -65,10 +65,8 @@ kubectl create secret -n observability generic electricitymap-exporter-secret --
 Deploy the exporter:
 
 ```bash
-kubectl apply -f electricitymap_exporter/pod.yaml
+kubectl apply -f electricitymap_exporter/kube.yaml
 ```
-
-> I struggled with the kube definitions, this can surely be improved. `kube.yaml` was another try.
 
 6. Prometheus metrics
 
