@@ -84,7 +84,7 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 12,
+                "h": 10,
                 "w": 24,
                 "x": 0,
                 "y": 0
@@ -94,7 +94,7 @@
                 "legend": {
                     "calcs": [],
                     "displayMode": "list",
-                    "placement": "bottom",
+                    "placement": "right",
                     "showLegend": true
                 },
                 "tooltip": {
@@ -109,14 +109,111 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "scaph_process_power_consumption_microwatts{exe=~\"cartservice|checkoutservice|shippingservice|locust|java|server\"} / 1000000",
+                    "expr": "scaph_process_power_consumption_microwatts{kubernetes_pod_namespace=\"onlineboutique\"} / 1000000",
                     "instant": false,
-                    "legendFormat": "{{exe}}",
+                    "legendFormat": "{{kubernetes_pod_name}}",
                     "range": true,
                     "refId": "A"
                 }
             ],
-            "title": "Online boutique consumption",
+            "title": "Online boutique energy consumption",
+            "transparent": true,
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisGridShow": true,
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 100,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": true,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "normal"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "watt"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 24,
+                "x": 0,
+                "y": 10
+            },
+            "id": 15,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "scaph_process_power_consumption_microwatts{kubernetes_pod_namespace=\"onlineboutique\"} / 1000000",
+                    "instant": false,
+                    "legendFormat": "{{kubernetes_pod_name}}",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
             "transparent": true,
             "type": "timeseries"
         },
@@ -134,17 +231,16 @@
                     "custom": {
                         "axisCenteredZero": false,
                         "axisColorMode": "text",
-                        "axisGridShow": true,
                         "axisLabel": "",
-                        "axisPlacement": "left",
-                        "fillOpacity": 100,
+                        "axisPlacement": "auto",
+                        "fillOpacity": 80,
                         "gradientMode": "none",
                         "hideFrom": {
                             "legend": false,
                             "tooltip": false,
                             "viz": false
                         },
-                        "lineWidth": 0,
+                        "lineWidth": 1,
                         "scaleDistribution": {
                             "type": "linear"
                         },
@@ -167,15 +263,15 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 11,
-                "w": 5,
+                "h": 7,
+                "w": 16,
                 "x": 0,
-                "y": 12
+                "y": 15
             },
             "id": 10,
             "options": {
                 "barRadius": 0,
-                "barWidth": 1,
+                "barWidth": 0.97,
                 "fullHighlight": false,
                 "groupWidth": 0.7,
                 "legend": {
@@ -187,9 +283,6 @@
                 "orientation": "vertical",
                 "showValue": "auto",
                 "stacking": "none",
-                "text": {
-                    "valueSize": 0
-                },
                 "tooltip": {
                     "mode": "single",
                     "sort": "none"
@@ -197,7 +290,7 @@
                 "xTickLabelRotation": 0,
                 "xTickLabelSpacing": 0
             },
-            "pluginVersion": "10.1.0",
+            "pluginVersion": "10.1.1",
             "targets": [
                 {
                     "datasource": {
@@ -206,7 +299,75 @@
                     },
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "sum_over_time(avg_over_time(avg(sum(scaph_process_power_consumption_microwatts{exe=~\"cartservice|checkoutservice|shippingservice|locust|java|server\"}) * 1.4)[1h:1h])[3h:1h]) /1000000",
+                    "expr": "sum(scaph_process_power_consumption_microwatts{ kubernetes_pod_namespace=\"onlineboutique\"}) * 1.2 / 1000000 /2",
+                    "format": "time_series",
+                    "instant": false,
+                    "interval": "30m",
+                    "legendFormat": "Value",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Energy consumption with PUE",
+            "transparent": true,
+            "type": "barchart"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "watth"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 4,
+                "x": 16,
+                "y": 15
+            },
+            "id": 14,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "vertical",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.1.1",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum_over_time(avg_over_time(avg(sum(scaph_process_power_consumption_microwatts{ kubernetes_pod_namespace=\"onlineboutique\"}) * 1.2)[1h:1h])[3h:1h]) /1000000",
                     "format": "time_series",
                     "instant": true,
                     "interval": "",
@@ -215,9 +376,175 @@
                     "refId": "A"
                 }
             ],
-            "title": "3h online boutique energy consumption",
+            "title": "3h energy consumption",
             "transparent": true,
-            "type": "barchart"
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "watth"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 4,
+                "x": 20,
+                "y": 15
+            },
+            "id": 17,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "vertical",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "pluginVersion": "10.1.1",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum_over_time(avg_over_time(avg(sum(scaph_process_power_consumption_microwatts{ kubernetes_pod_namespace=\"onlineboutique\"}) * 1.2)[1h:1h])[3h:1h]) /1000000 * 8 * 7",
+                    "format": "time_series",
+                    "instant": true,
+                    "interval": "",
+                    "legendFormat": "Value",
+                    "range": false,
+                    "refId": "A"
+                }
+            ],
+            "title": "1 week energy consumption",
+            "transparent": true,
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 100,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "stepAfter",
+                        "lineWidth": 0,
+                        "pointSize": 1,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "gCO₂eq/kWh"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 24,
+                "x": 0,
+                "y": 22
+            },
+            "id": 18,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": false
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.1.1",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum(carbon_intensity_fr)",
+                    "format": "time_series",
+                    "instant": false,
+                    "interval": "",
+                    "legendFormat": "Value",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Carbon intensity in France",
+            "transparent": true,
+            "type": "timeseries"
         },
         {
             "datasource": {
@@ -233,17 +560,16 @@
                     "custom": {
                         "axisCenteredZero": false,
                         "axisColorMode": "text",
-                        "axisGridShow": true,
                         "axisLabel": "",
-                        "axisPlacement": "left",
-                        "fillOpacity": 100,
+                        "axisPlacement": "auto",
+                        "fillOpacity": 80,
                         "gradientMode": "none",
                         "hideFrom": {
                             "legend": false,
                             "tooltip": false,
                             "viz": false
                         },
-                        "lineWidth": 0,
+                        "lineWidth": 1,
                         "scaleDistribution": {
                             "type": "linear"
                         },
@@ -266,37 +592,102 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 11,
-                "w": 5,
-                "x": 5,
-                "y": 12
+                "h": 7,
+                "w": 16,
+                "x": 0,
+                "y": 29
+            },
+            "id": 16,
+            "options": {
+                "barRadius": 0,
+                "barWidth": 0.97,
+                "fullHighlight": false,
+                "groupWidth": 0.7,
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": false
+                },
+                "orientation": "vertical",
+                "showValue": "auto",
+                "stacking": "none",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                },
+                "xTickLabelRotation": 0,
+                "xTickLabelSpacing": 0
+            },
+            "pluginVersion": "10.1.1",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum(scaph_process_power_consumption_microwatts{kubernetes_pod_namespace=\"onlineboutique\"}) * 1.2 * ignoring(cmdline, container, container_id, container_schedule, kubernetes_node_name, kubernetes_pod_name, kubernetes_pod_namespace, endpoint, exe, instance, job, namespace, pid, pod, service) carbon_intensity_fr / 1000 / 1000000 /2",
+                    "format": "time_series",
+                    "instant": false,
+                    "interval": "30m",
+                    "legendFormat": "Value",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "Online boutique energy consumption per hour",
+            "transparent": true,
+            "type": "barchart"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "gCO₂eq"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 4,
+                "x": 16,
+                "y": 29
             },
             "id": 11,
             "options": {
-                "barRadius": 0,
-                "barWidth": 1,
-                "fullHighlight": false,
-                "groupWidth": 0.7,
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": false
-                },
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
                 "orientation": "vertical",
-                "showValue": "auto",
-                "stacking": "none",
-                "text": {
-                    "valueSize": 0
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
                 },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                },
-                "xTickLabelRotation": 0,
-                "xTickLabelSpacing": 0
+                "textMode": "auto"
             },
-            "pluginVersion": "10.1.0",
+            "pluginVersion": "10.1.1",
             "targets": [
                 {
                     "datasource": {
@@ -305,7 +696,7 @@
                     },
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "sum_over_time(avg_over_time(avg(sum(scaph_process_power_consumption_microwatts{exe=~\"cartservice|checkoutservice|shippingservice|locust|java|server\"}) * 1.4 * \n      ignoring(cmdline, container, endpoint, exe, instance, job, namespace, pid, pod, service) carbon_intensity_fr \n      / 1000)[1h:1h])[3h:1h]) /1000000",
+                    "expr": "sum_over_time(avg_over_time(avg(sum(scaph_process_power_consumption_microwatts{kubernetes_pod_namespace=\"onlineboutique\"}) * 1.2 * \n      ignoring(cmdline, container, container_id, container_schedule, kubernetes_node_name, kubernetes_pod_name, kubernetes_pod_namespace, endpoint, exe, instance, job, namespace, pid, pod, service) carbon_intensity_fr \n      / 1000)[1h:1h])[3h:1h]) /1000000",
                     "format": "time_series",
                     "instant": true,
                     "interval": "",
@@ -314,9 +705,9 @@
                     "refId": "A"
                 }
             ],
-            "title": "3h online boutique CO2 eq",
+            "title": "3h CO2 eq",
             "transparent": true,
-            "type": "barchart"
+            "type": "stat"
         },
         {
             "datasource": {
@@ -328,27 +719,6 @@
                 "defaults": {
                     "color": {
                         "mode": "thresholds"
-                    },
-                    "custom": {
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisGridShow": true,
-                        "axisLabel": "",
-                        "axisPlacement": "left",
-                        "fillOpacity": 100,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "lineWidth": 0,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
                     },
                     "mappings": [],
                     "thresholds": {
@@ -365,37 +735,27 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 11,
-                "w": 5,
-                "x": 10,
-                "y": 12
+                "h": 7,
+                "w": 4,
+                "x": 20,
+                "y": 29
             },
             "id": 12,
             "options": {
-                "barRadius": 0,
-                "barWidth": 1,
-                "fullHighlight": false,
-                "groupWidth": 0.7,
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": false
-                },
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
                 "orientation": "vertical",
-                "showValue": "auto",
-                "stacking": "none",
-                "text": {
-                    "valueSize": 0
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
                 },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                },
-                "xTickLabelRotation": 0,
-                "xTickLabelSpacing": 0
+                "textMode": "auto"
             },
-            "pluginVersion": "10.1.0",
+            "pluginVersion": "10.1.1",
             "targets": [
                 {
                     "datasource": {
@@ -413,9 +773,9 @@
                     "refId": "A"
                 }
             ],
-            "title": "A week online boutique CO2 eq",
+            "title": "1 week CO2 eq",
             "transparent": true,
-            "type": "barchart"
+            "type": "stat"
         },
         {
             "collapsed": true,
@@ -423,317 +783,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 23
-            },
-            "id": 7,
-            "panels": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "description": "",
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "palette-classic"
-                            },
-                            "custom": {
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisGridShow": true,
-                                "axisLabel": "",
-                                "axisPlacement": "auto",
-                                "barAlignment": 0,
-                                "drawStyle": "line",
-                                "fillOpacity": 0,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "insertNulls": false,
-                                "lineInterpolation": "linear",
-                                "lineStyle": {
-                                    "fill": "solid"
-                                },
-                                "lineWidth": 1,
-                                "pointSize": 5,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "showPoints": "never",
-                                "spanNulls": true,
-                                "stacking": {
-                                    "group": "A",
-                                    "mode": "none"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "min": 0,
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": null
-                                    }
-                                ]
-                            },
-                            "unit": "watt"
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 11,
-                        "w": 12,
-                        "x": 0,
-                        "y": 24
-                    },
-                    "id": 8,
-                    "options": {
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": false
-                        },
-                        "tooltip": {
-                            "mode": "single",
-                            "sort": "none"
-                        }
-                    },
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                            },
-                            "editorMode": "code",
-                            "expr": "scaph_process_power_consumption_microwatts{exe=~\"$exe\"} / 1000000",
-                            "instant": false,
-                            "legendFormat": "{{exe}}",
-                            "range": true,
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "$exe consumption",
-                    "transparent": true,
-                    "type": "timeseries"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "description": "",
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "thresholds"
-                            },
-                            "custom": {
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisGridShow": true,
-                                "axisLabel": "",
-                                "axisPlacement": "left",
-                                "fillOpacity": 100,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "lineWidth": 0,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": null
-                                    }
-                                ]
-                            },
-                            "unit": "watth"
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 11,
-                        "w": 5,
-                        "x": 12,
-                        "y": 24
-                    },
-                    "id": 3,
-                    "options": {
-                        "barRadius": 0,
-                        "barWidth": 1,
-                        "fullHighlight": false,
-                        "groupWidth": 0.7,
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": false
-                        },
-                        "orientation": "vertical",
-                        "showValue": "auto",
-                        "stacking": "none",
-                        "text": {
-                            "valueSize": 0
-                        },
-                        "tooltip": {
-                            "mode": "single",
-                            "sort": "none"
-                        },
-                        "xTickLabelRotation": 0,
-                        "xTickLabelSpacing": 0
-                    },
-                    "pluginVersion": "10.1.0",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                            },
-                            "editorMode": "code",
-                            "exemplar": false,
-                            "expr": "sum_over_time(avg_over_time(avg(scaph_process_power_consumption_microwatts{exe=\"$exe\"} * 1.4)[1h:1h])[3h:1h]) /1000000",
-                            "format": "time_series",
-                            "instant": true,
-                            "interval": "",
-                            "legendFormat": "Value",
-                            "range": false,
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "3h $exe energy consumption",
-                    "transparent": true,
-                    "type": "barchart"
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "prometheus"
-                    },
-                    "description": "",
-                    "fieldConfig": {
-                        "defaults": {
-                            "color": {
-                                "mode": "thresholds"
-                            },
-                            "custom": {
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisGridShow": true,
-                                "axisLabel": "",
-                                "axisPlacement": "left",
-                                "fillOpacity": 100,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "lineWidth": 0,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
-                            "mappings": [],
-                            "thresholds": {
-                                "mode": "absolute",
-                                "steps": [
-                                    {
-                                        "color": "green",
-                                        "value": null
-                                    }
-                                ]
-                            },
-                            "unit": "gCO₂eq"
-                        },
-                        "overrides": []
-                    },
-                    "gridPos": {
-                        "h": 11,
-                        "w": 5,
-                        "x": 17,
-                        "y": 24
-                    },
-                    "id": 4,
-                    "options": {
-                        "barRadius": 0,
-                        "barWidth": 1,
-                        "fullHighlight": false,
-                        "groupWidth": 0.7,
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": false
-                        },
-                        "orientation": "vertical",
-                        "showValue": "auto",
-                        "stacking": "none",
-                        "text": {
-                            "valueSize": 0
-                        },
-                        "tooltip": {
-                            "mode": "single",
-                            "sort": "none"
-                        },
-                        "xTickLabelRotation": 0,
-                        "xTickLabelSpacing": 0
-                    },
-                    "pluginVersion": "10.1.0",
-                    "targets": [
-                        {
-                            "datasource": {
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                            },
-                            "editorMode": "code",
-                            "exemplar": false,
-                            "expr": "sum_over_time(avg_over_time(avg(scaph_process_power_consumption_microwatts{exe=\"$exe\"} * 1.4 * \n      ignoring(cmdline, container, endpoint, exe, instance, job, namespace, pid, pod, service) carbon_intensity_fr \n      / 1000)[1h:1h])[3h:1h]) /1000000",
-                            "format": "time_series",
-                            "instant": true,
-                            "interval": "",
-                            "legendFormat": "Value",
-                            "range": false,
-                            "refId": "A"
-                        }
-                    ],
-                    "title": "3h $exe CO2 eq",
-                    "transparent": true,
-                    "type": "barchart"
-                }
-            ],
-            "title": "$exe",
-            "type": "row"
-        },
-        {
-            "collapsed": true,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 24
+                "y": 36
             },
             "id": 6,
             "panels": [
@@ -845,27 +895,6 @@
                             "color": {
                                 "mode": "thresholds"
                             },
-                            "custom": {
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisGridShow": true,
-                                "axisLabel": "",
-                                "axisPlacement": "left",
-                                "fillOpacity": 100,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "lineWidth": 0,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
-                            },
                             "mappings": [],
                             "thresholds": {
                                 "mode": "absolute",
@@ -888,30 +917,20 @@
                     },
                     "id": 1,
                     "options": {
-                        "barRadius": 0,
-                        "barWidth": 1,
-                        "fullHighlight": false,
-                        "groupWidth": 0.7,
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": false
-                        },
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
                         "orientation": "vertical",
-                        "showValue": "auto",
-                        "stacking": "none",
-                        "text": {
-                            "valueSize": 0
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
                         },
-                        "tooltip": {
-                            "mode": "single",
-                            "sort": "none"
-                        },
-                        "xTickLabelRotation": 0,
-                        "xTickLabelSpacing": 0
+                        "textMode": "auto"
                     },
-                    "pluginVersion": "10.1.0",
+                    "pluginVersion": "10.1.1",
                     "targets": [
                         {
                             "datasource": {
@@ -931,7 +950,7 @@
                     ],
                     "title": "3h host energy consumption",
                     "transparent": true,
-                    "type": "barchart"
+                    "type": "stat"
                 },
                 {
                     "datasource": {
@@ -943,27 +962,6 @@
                         "defaults": {
                             "color": {
                                 "mode": "thresholds"
-                            },
-                            "custom": {
-                                "axisCenteredZero": false,
-                                "axisColorMode": "text",
-                                "axisGridShow": true,
-                                "axisLabel": "",
-                                "axisPlacement": "left",
-                                "fillOpacity": 100,
-                                "gradientMode": "none",
-                                "hideFrom": {
-                                    "legend": false,
-                                    "tooltip": false,
-                                    "viz": false
-                                },
-                                "lineWidth": 0,
-                                "scaleDistribution": {
-                                    "type": "linear"
-                                },
-                                "thresholdsStyle": {
-                                    "mode": "off"
-                                }
                             },
                             "mappings": [],
                             "thresholds": {
@@ -987,30 +985,20 @@
                     },
                     "id": 2,
                     "options": {
-                        "barRadius": 0,
-                        "barWidth": 1,
-                        "fullHighlight": false,
-                        "groupWidth": 0.7,
-                        "legend": {
-                            "calcs": [],
-                            "displayMode": "list",
-                            "placement": "bottom",
-                            "showLegend": false
-                        },
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
                         "orientation": "vertical",
-                        "showValue": "auto",
-                        "stacking": "none",
-                        "text": {
-                            "valueSize": 0
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
                         },
-                        "tooltip": {
-                            "mode": "single",
-                            "sort": "none"
-                        },
-                        "xTickLabelRotation": 0,
-                        "xTickLabelSpacing": 0
+                        "textMode": "auto"
                     },
-                    "pluginVersion": "10.1.0",
+                    "pluginVersion": "10.1.1",
                     "targets": [
                         {
                             "datasource": {
@@ -1030,67 +1018,99 @@
                     ],
                     "title": "3h host CO2 eq",
                     "transparent": true,
-                    "type": "barchart"
+                    "type": "stat"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "fieldConfig": {
+                        "defaults": {
+                            "color": {
+                                "mode": "thresholds"
+                            },
+                            "mappings": [],
+                            "max": 1,
+                            "min": 0,
+                            "thresholds": {
+                                "mode": "absolute",
+                                "steps": [
+                                    {
+                                        "color": "green"
+                                    },
+                                    {
+                                        "color": "red",
+                                        "value": 80
+                                    }
+                                ]
+                            },
+                            "unit": "percentunit"
+                        },
+                        "overrides": []
+                    },
+                    "gridPos": {
+                        "h": 7,
+                        "w": 12,
+                        "x": 0,
+                        "y": 36
+                    },
+                    "id": 13,
+                    "links": [],
+                    "options": {
+                        "colorMode": "value",
+                        "graphMode": "area",
+                        "justifyMode": "auto",
+                        "orientation": "auto",
+                        "reduceOptions": {
+                            "calcs": [
+                                "lastNotNull"
+                            ],
+                            "fields": "",
+                            "values": false
+                        },
+                        "textMode": "auto"
+                    },
+                    "pluginVersion": "10.1.1",
+                    "targets": [
+                        {
+                            "datasource": {
+                                "uid": "$datasource"
+                            },
+                            "editorMode": "code",
+                            "exemplar": false,
+                            "expr": "(\n  (1 - sum without (mode) (rate(node_cpu_seconds_total{job=\"node-exporter\", mode=~\"idle|iowait|steal\"}[$__rate_interval])))\n/ ignoring(cpu) group_left\n  count without (cpu, mode) (node_cpu_seconds_total{job=\"node-exporter\", mode=\"idle\"})\n)\n",
+                            "format": "time_series",
+                            "instant": true,
+                            "intervalFactor": 5,
+                            "legendFormat": "{{cpu}}",
+                            "range": false,
+                            "refId": "A"
+                        }
+                    ],
+                    "title": "CPU Usage",
+                    "type": "stat"
                 }
             ],
             "title": "Host",
             "type": "row"
         }
     ],
-    "refresh": "",
+    "refresh": false,
     "schemaVersion": 38,
     "style": "dark",
     "tags": [],
     "templating": {
-        "list": [
-            {
-                "current": {
-                    "selected": false,
-                    "text": "cartservice",
-                    "value": "cartservice"
-                },
-                "hide": 0,
-                "includeAll": false,
-                "label": "Service",
-                "multi": false,
-                "name": "exe",
-                "options": [
-                    {
-                        "selected": true,
-                        "text": "cartservice",
-                        "value": "cartservice"
-                    },
-                    {
-                        "selected": false,
-                        "text": "checkoutservice",
-                        "value": "checkoutservice"
-                    },
-                    {
-                        "selected": false,
-                        "text": "shippingservice",
-                        "value": "shippingservice"
-                    },
-                    {
-                        "selected": false,
-                        "text": "locust",
-                        "value": "locust"
-                    }
-                ],
-                "query": "cartservice,checkoutservice,shippingservice,locust",
-                "queryValue": "",
-                "skipUrlSync": false,
-                "type": "custom"
-            }
-        ]
+        "list": []
     },
     "time": {
-        "from": "now-3h",
+        "from": "now-9h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "",
     "title": "Online Boutique Energy consumption",
     "uid": "f131818d-f01f-4e7f-a47d-138c52a9cb25",
-    "version": 19,
+    "version": 37,
     "weekStart": ""
 }
