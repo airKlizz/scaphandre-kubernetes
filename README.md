@@ -86,3 +86,40 @@ sum_over_time(
   )[3h:1h]
 )
 ```
+
+
+# Expose metrics accros KVM/QEMU
+
+/!\ I had to host my own container image because it doesn't enable --features qemu on actual hubblo/scaphandre:dev compiled version . /!\
+
+1. On bare metal hypervisor, run scaphandre in qemu exporter mode : 
+```docker run -d -p 8080:8080 -v /sys/class/powercap/:/sys/class/powercap -v /proc:/proc -v /var/lib/libvirt/scaphandre/:/var/lib/libvirt/scaphandre/ ghcr.io/damienvergnaud/scaphandre-kubernetes/scaphandre:dev2 qemu```
+
+> Scaphandre will split consumptions metrics found in bare-metal host per virtual machine under Kvm/Qemu. 
+> But mapping it to expose it under each VM will be your duty
+
+2. For each VM creation do this on bare-metal hypervisor : 
+```mount -t tmpfs tmpfs_<DOMAIN_QEMU_VM> /var/lib/libvirt/scaphandre/<DOMAIN_QEMU_VM> -o size=10m```
+
+3. Then on kvm/qemu configuration, you will have to define this mapping per VM
+> Scaphandre documentation recommand using virt-manager, it's a good recommandation, use it, otherwise :  
+```sudo virsh edit <DOMAIN_NAME>```
+
+> It only worked using virtio-p9 as a driver for me.
+
+```
+    <filesystem type='mount' accessmode='mapped'>
+      <source dir='/var/lib/libvirt/scaphandre/ubuntuvierge'/>
+      <target dir='/dev/scaphandre'/>
+    </filesystem>
+```
+
+On guest : 
+1. Mount the newly created virtio-9p mountpoint in /var/scaphandre
+```mount -t 9p -o trans=virtio scaphandre /var/scaphandre
+
+Start Scaphandre in VM mode (Thus, scaphandre is searching for RAPL in /var/scaphandre/ instead of /sys/class/powercap/
+```podman run -p 8080:8080 -v /sys/class/powercap/:/sys/class/powercap -v /proc:/proc -it hubblo/scaphandre:dev prometheus --vm -s5```
+
+Check for metrics prometheus metrics :
+```curl localhost:8080/metrics" now return metrics
