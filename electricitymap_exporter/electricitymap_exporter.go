@@ -22,8 +22,24 @@ func init() {
 	prometheus.MustRegister(ciGauge)
 }
 
+type EmissionHistory struct {
+	Zone               string    `json:"zone"`
+	CarbonIntensity    int       `json:"carbonIntensity"`
+	Datetime           time.Time `json:"datetime"`
+	UpdatedAt          time.Time `json:"updatedAt"`
+	CreatedAt          time.Time `json:"createdAt"`
+	EmissionFactorType string    `json:"emissionFactorType"`
+	IsEstimated        bool      `json:"isEstimated"`
+	EstimationMethod   *string   `json:"estimationMethod"`
+}
+
+type EmissionData struct {
+	Zone    string            `json:"zone"`
+	History []EmissionHistory `json:"history"`
+}
+
 func fetchCarbonIntensity() float64 {
-	url := "https://api-access.electricitymaps.com/free-tier/carbon-intensity/latest?zone=FR"
+	url := "https://api-access.electricitymaps.com/free-tier/carbon-intensity/history?zone=FR"
 
 	req, _ := http.NewRequest("GET", url, nil)
 
@@ -36,16 +52,23 @@ func fetchCarbonIntensity() float64 {
 	}
 	defer res.Body.Close()
 
-	var data map[string]interface{}
+	var data EmissionData
 
 	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
 		log.Printf("Error decoding JSON: %v", err)
 		return 0.0
 	}
 
-	latestCI := data["carbonIntensity"].(float64)
+	// We don't take the latest value because estimated, so we take the 4th value starting from the end to make sure is not estimated.
+	// It makes a difference of ~6 hours between the metric time and the carbon intensity time
+	timeOffset := 4
+	if len(data.History) < timeOffset {
+		log.Printf("No history: %+v", data)
+		return 0.0
+	}
+	carbonIntensity := data.History[len(data.History)-timeOffset].CarbonIntensity
 
-	return latestCI
+	return float64(carbonIntensity)
 }
 
 func main() {
