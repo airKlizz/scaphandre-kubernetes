@@ -78,7 +78,7 @@ func main() {
 		for {
 			ci := fetchCarbonIntensity()
 			ciGauge.Set(ci)
-			time.Sleep(time.Hour)
+			time.Sleep(10 * time.Minute)
 		}
 	}()
 
