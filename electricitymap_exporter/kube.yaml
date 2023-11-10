@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: electricitymap
-          image: airklizz/electricitymap_exporter:v2
+          image: airklizz/electricitymap_exporter:v3
           ports:
           - name: metrics
             containerPort: 8000
